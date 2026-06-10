@@ -1,0 +1,53 @@
+:root {
+    --rosa-bg: #fce4e6;
+    --rosa-card: #ffffff;
+    --rosa-borda: #f4a0a8;
+    --vermelho: #b8323d;
+    --texto: #4a1519;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: var(--rosa-bg);
+    color: var(--texto);
+    margin: 0;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
+}
+
+.love-card {
+    background: var(--rosa-card);
+    border: 2px solid var(--rosa-borda);
+    border-radius: 24px;
+    padding: 30px 24px;
+    width: 100%;
+    max-width: 390px;
+    box-shadow: 0 10px 25px rgba(184, 50, 61, 0.08);
+}
+
+.app-title {
+    font-size: 28px;
+    color: var(--vermelho);
+    font-weight: bold;
+}
+
+.btn-love {
+    background-color: var(--vermelho);
+    color: white;
+    border-radius: 14px;
+    font-weight: 700;
+}
+
+.btn-secondary-love {
+    background-color: #ffffff;
+    color: var(--vermelho);
+    border: 2px solid var(--vermelho);
+    border-radius: 14px;
+    font-weight: 700;
+}

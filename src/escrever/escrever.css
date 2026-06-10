@@ -1,0 +1,147 @@
+:root {
+    --rosa-bg: #fce4e6;
+    --rosa-card: #ffffff;
+    --rosa-borda: #f4a0a8;
+    --vermelho: #b8323d;
+    --texto: #4a1519;
+    --texto-muted: #8a6265;
+}
+
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: var(--rosa-bg);
+    color: var(--texto);
+    margin: 0;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
+}
+
+.love-card {
+    background: var(--rosa-card);
+    border: 2px solid var(--rosa-borda);
+    border-radius: 24px;
+    padding: 30px 24px;
+    width: 100%;
+    max-width: 390px;
+}
+
+.app-title {
+    font-size: 28px;
+    color: var(--vermelho);
+    font-weight: bold;
+}
+
+.love-label {
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: var(--texto-muted);
+    margin-bottom: 6px;
+}
+
+.love-input {
+    padding: 14px !important;
+    font-size: 16px !important;
+    border: 2px solid #e2e2e2 !important;
+    border-radius: 12px !important;
+    background-color: #ebf3fe !important;
+}
+
+.anon-box {
+    background: #fff5f6;
+    border: 1px dashed var(--rosa-borda);
+    border-radius: 14px;
+}
+
+.btn-love {
+    background-color: var(--vermelho);
+    color: white;
+    border-radius: 14px;
+    font-weight: 700;
+    width: 100%;
+}
+
+.btn-secondary-love {
+    background-color: #ffffff;
+    color: var(--vermelho);
+    border: 2px solid var(--vermelho);
+    border-radius: 14px;
+    font-weight: 700;
+}
+
+.pix-payment-box {
+    background-color: #f0f7ff;
+    border: 1px solid #b3d7ff;
+    border-radius: 14px;
+}
+
+.pix-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #004085;
+    text-transform: uppercase;
+}
+
+.pix-price {
+    font-size: 14px;
+    font-weight: bold;
+    color: #004085;
+    background: #cce5ff;
+    padding: 2px 8px;
+    border-radius: 8px;
+}
+
+.pix-instructions {
+    font-size: 11px;
+    color: #004085;
+    margin-top: 6px;
+    line-height: 1.3;
+    margin-bottom: 0;
+}
+
+/* Estilos para a Tela de Pagamento Flutuante */
+.love-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(74, 21, 25, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    padding: 16px;
+}
+
+.love-modal-content {
+    background: #ffffff;
+    border: 2px solid var(--rosa-borda);
+    border-radius: 24px;
+    padding: 24px;
+    width: 100%;
+    max-width: 360px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.animate-pop {
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

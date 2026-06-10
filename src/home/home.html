@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Início - Correio Elegante</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/src/home/home.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="love-card shadow-sm text-center">
+            <!-- ID ajustado para receber o "Olá, Nome! " -->
+            <div class="app-title" id="home-user-info">Olá! 💕</div>
+            <p class="text-muted small mb-4">O que você quer fazer agora?</p>
+
+            <div class="d-flex flex-column gap-3">
+                <!-- Botão 1: Enviar Carta -->
+                <a href="/src/escrever/escrever.html"
+                    class="btn btn-love py-3 text-decoration-none fw-bold rounded-4 shadow-sm">
+                    Escrever Nova Carta
+                </a>
+
+                <!-- Botão 2: Histórico -->
+                <a href="/src/historico/historico.html"
+                    class="btn btn-secondary-love py-3 text-decoration-none fw-bold rounded-4 shadow-sm">
+                    Ver Minhas Cartas Enviadas
+                </a>
+
+                <!-- Botão 3: Sair (Agora combinando perfeitamente com os de cima) -->
+                <button id="btn-logout" class="btn btn-outline-secondary py-2 fw-bold rounded-4 shadow-sm mt-2">
+                    Sair da Conta 
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 📄 CORREÇÃO CRUCIAL: Agora puxando o home.js corretamente -->
+    <script type="module" src="/src/home/home.js"></script>
+</body>
+
+</html>

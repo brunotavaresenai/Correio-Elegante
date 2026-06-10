@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Entrar - Correio Elegante</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Lato:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/src/auth/auth.css">
+</head>
+
+<body>
+
+    <div class="auth-wrapper">
+        <div class="mobile-container">
+
+            <!-- CHAMADA DE MARKETING SUPERIOR -->
+            <div class="marketing-header text-center mb-4">
+                <h1 class="marketing-title mt-2">Quem é o seu <br><span>Amor</span>?</h1>
+                <p class="marketing-sub">Envie seu bilhete não perda tempo!</p>
+            </div>
+
+            <!-- CARD PRINCIPAL -->
+            <div class="love-card shadow-sm">
+                <div class="app-title">Correio Elegante</div>
+                <div class="app-subtitle mb-4">TERCEIRÃO 2026 </div>
+
+                <div class="love-tabs mb-4">
+                    <button class="love-tab active" id="tab-login">Entrar</button>
+                    <button class="love-tab" id="tab-cadastro">Cadastrar</button>
+                </div>
+
+                <!-- Formulário Login -->
+                <div id="form-login">
+                    <div class="mb-3 text-start">
+                        <label class="love-label">E-mail</label>
+                        <input class="form-control love-input" type="email" id="login-email"
+                            placeholder="seu@email.com">
+                    </div>
+                    <div class="mb-4 text-start">
+                        <label class="love-label">Senha</label>
+                        <input class="form-control love-input" type="password" id="login-senha" placeholder="••••••••">
+                    </div>
+                    <button class="btn btn-love w-100 py-3" id="btn-fazer-login">Entrar no App</button>
+                </div>
+
+                <!-- Formulário Cadastro -->
+                <div id="form-cadastro" style="display: none;">
+
+    <div class="mb-3 text-start">
+        <label class="love-label">SEU NOME / APELIDO</label>
+        <input class="form-control love-input" type="text" id="cad-nome" placeholder="Diga seu nome ou apelido (opcional)">
+    </div>
+
+    <div class="mb-3 text-start">
+        <label class="love-label">E-MAIL</label>
+        <input class="form-control love-input" type="email" id="cad-email" placeholder="seu@email.com">
+    </div>
+
+    <div class="mb-3 text-start">
+        <label class="love-label">SENHA</label>
+        <input class="form-control love-input" type="password" id="cad-senha" placeholder="Mínimo 6 caracteres">
+    </div>
+
+    <button class="btn btn-love w-100 py-3 mt-2" id="btn-fazer-cadastro">Criar Minha Conta</button>
+</div>
+
+<div id="auth-msg" class="text-danger small mt-2 text-center fw-bold"></div>
+
+            <!-- INFORMAÇÕES DE COMPRA INFERIOR -->
+            <div class="marketing-footer text-center mt-4">
+                <div class="price-pill">Apenas R$ 2,00 por bilhete</div>
+                <p class="mt-2 text-muted" style="font-size: 11px;">Escreva sua mensagem e pague via Pix Copia e Cola na
+                    próxima tela.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script type="module" src="/src/auth/auth.js"></script>
+</body>
+
+</html>
