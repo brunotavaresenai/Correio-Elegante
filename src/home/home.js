@@ -15,21 +15,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Monitora o login ativo do estudante
+// Monitora se o usuário está logado de verdade dentro da Home
 onAuthStateChanged(auth, (user) => {
     if (!user) {
-        // Se a sessão caiu ou deslogou, manda pro login
-        window.location.href = '../auth/index.html';
+        // Se NÃO estiver logado, expulsa para a raiz do projeto (onde está o index.html)
+        window.location.href = '../../index.html';
     } else {
-        // Atualiza a frase "Olá!" com o nome real cadastrado do aluno
+        // Se estiver logado, atualiza o texto de boas-vindas
         const infoUsuario = document.getElementById('home-user-info');
         if (infoUsuario && user.displayName) {
             infoUsuario.innerHTML = `Olá, ${user.displayName}! ❤️`;
         }
     }
 });
-
-// Executa as ações assim que a página carregar os elementos na tela
+// Configuração das ações assim que a página carregar
 document.addEventListener('DOMContentLoaded', () => {
     const btnSair = document.getElementById('btn-logout');
 
@@ -37,10 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
         btnSair.addEventListener('click', async (e) => {
             e.preventDefault();
             try {
-                // Remove o token de login do navegador via Firebase
+                // Remove a sessão do Firebase
                 await auth.signOut();
-                // Redireciona trancando a página
-                window.location.href = '../auth/index.html';
+                // Como home.html está em src/home/, volta dois níveis para achar o index.html na raiz
+                window.location.href = '../../index.html';
             } catch (error) {
                 console.error("Erro ao encerrar sessão:", error);
             }

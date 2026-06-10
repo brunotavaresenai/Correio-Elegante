@@ -17,11 +17,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Monitor de Sessão: Se o aluno já estiver logado, pula essa tela e vai para a Home
+// Monitora o estado de autenticação apenas para saber se deve mandar para a home
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        window.location.href = '../home/home.html';
+        // Se o usuário JÁ ESTÁ logado, manda ele direto para a Home correspondente
+        // Como o index.html está na raiz, o caminho a partir dele DEVE começar com src/
+        window.location.href = 'src/home/home.html';
     }
+    // Se NÃO tiver usuário, não faça nada! Deixe ele preencher o formulário em paz.
 });
 
 // Executa as configurações assim que os elementos HTML carregarem na tela
