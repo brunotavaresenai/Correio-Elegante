@@ -1,5 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+// Garantindo as importações do banco de dados para buscar o nome do usuário
+import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAiOLS0LSGbxPs2cwnmL6PBRtaNjETtywI",
@@ -14,31 +16,46 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getDatabase(app); // Inicializa o banco de dados
 
-// Monitora se o usuário está logado de verdade dentro da Home
-onAuthStateChanged(auth, (user) => {
+// Monitora se o usuário está logado e busca o nome dele
+onAuthStateChanged(auth, async (user) => {
     if (!user) {
         // Se NÃO estiver logado, expulsa para a raiz do projeto (onde está o index.html)
         window.location.href = '../../index.html';
     } else {
-        // Se estiver logado, atualiza o texto de boas-vindas
         const infoUsuario = document.getElementById('home-user-info');
-        if (infoUsuario && user.displayName) {
-            infoUsuario.innerHTML = `Olá, ${user.displayName}! ❤️`;
+        if (infoUsuario) {
+            try {
+                // Busca o nó do usuário baseado no UID dele no banco de dados
+                const dbRef = ref(db);
+                const snapshot = await get(child(dbRef, `usuarios/${user.uid}`));
+
+                if (snapshot.exists() && snapshot.val().nome) {
+                    // Substitui o "Estudante" pelo Nome Real cadastrado!
+                    infoUsuario.innerHTML = `Olá, ${snapshot.val().nome}! ❤️`;
+                } else {
+                    // Plano B caso não encontre o nome completo no banco
+                    const nomeFallback = user.displayName || user.email.split('@')[0];
+                    infoUsuario.innerHTML = `Olá, ${nomeFallback}! ❤️`;
+                }
+            } catch (error) {
+                console.error("Erro ao buscar nome do usuário:", error);
+                // Plano C para o app não travar caso a conexão falhe
+                infoUsuario.innerHTML = `Olá! ❤️`;
+            }
         }
     }
 });
-// Configuração das ações assim que a página carregar
+
+// Configuração do botão de sair (mantido igual)
 document.addEventListener('DOMContentLoaded', () => {
     const btnSair = document.getElementById('btn-logout');
-
     if (btnSair) {
         btnSair.addEventListener('click', async (e) => {
             e.preventDefault();
             try {
-                // Remove a sessão do Firebase
                 await auth.signOut();
-                // Como home.html está em src/home/, volta dois níveis para achar o index.html na raiz
                 window.location.href = '../../index.html';
             } catch (error) {
                 console.error("Erro ao encerrar sessão:", error);

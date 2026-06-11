@@ -178,13 +178,13 @@ if (btnFecharModal) {
         }
 
         // 2. Cria o texto para o envio no WhatsApp atualizado com a informação do remetente real
-        const numeroWhats = "557182330675";
-        const textoMensagem = `Olá! Acabei de enviar um Correio Elegante pelo App! 💌\n\n` +
-            `👤 *Para:* ${destinatario}\n` +
-            `🕵️‍♂️ *Remetente:* ${textoRemetente}\n` +
-            `🎁 *Combo:* ${nomeItem}\n` +
-            `💰 *Valor:* R$ ${valorPresente}\n\n` +
-            `📌 _Estou enviando o comprovante do Pix enviado para o e-mail do Terceirão em anexo para aprovação!_`;
+        const numeroWhats = "5571996764885"; // Número do Terceirão para onde o WhatsApp deve redirecionar
+        const textoMensagem = `Olá! Acabei de enviar um Correio Elegante pelo App! \n\n` +
+            ` *Para:* ${destinatario}\n` +
+            ` *Remetente:* ${textoRemetente}\n` +
+            ` *Combo:* ${nomeItem}\n` +
+            ` *Valor:* R$ ${valorPresente}\n\n` +
+            ` _Estou enviando o comprovante do Pix enviado para o e-mail do Terceirão em anexo para aprovação!_`;
 
         const linkWhatsapp = `https://api.whatsapp.com/send?phone=${numeroWhats}&text=${encodeURIComponent(textoMensagem)}`;
 
