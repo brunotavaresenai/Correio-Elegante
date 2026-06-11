@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
-// CREDENCIAIS OFICIAIS CORRIGIDAS (Trocado o 'O' por '0' na apiKey)
+// CREDENCIAIS OFICIAIS
 const firebaseConfig = {
     apiKey: "AIzaSyAiOLS0LSGbxPs2cwnmL6PBRtaNjETtywI",
     authDomain: "correio-elegante-terceirao.firebaseapp.com",
@@ -17,14 +17,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// Monitora o estado de autenticação apenas para saber se deve mandar para a home
+// 🚀 CENTRAL DE REDIRECIONAMENTO (Deixe o Firebase gerenciar a entrada)
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // Se o usuário JÁ ESTÁ logado, manda ele direto para a Home correspondente
-        // Como o index.html está na raiz, o caminho a partir dele DEVE começar com src/
+        // Quando o usuário logar OU cadastrar com sucesso, ele é mandado para cá de forma limpa
         window.location.href = 'src/home/home.html';
     }
-    // Se NÃO tiver usuário, não faça nada! Deixe ele preencher o formulário em paz.
 });
 
 // Executa as configurações assim que os elementos HTML carregarem na tela
@@ -40,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 🔄 ALTERNÂNCIA DE TELAS (ENTRAR VS CADASTRAR)
     if (tabLogin && tabCadastro) {
         tabLogin.addEventListener('click', () => {
-            if (formLogin) formLogin.style.display = 'block';
+            if (formLogin) formLogin.style.style.display = 'block';
             if (formCadastro) formCadastro.style.display = 'none';
             tabLogin.classList.add('active');
             tabCadastro.classList.remove('active');
@@ -92,16 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 msgBox.innerText = "Criando sua conta...";
             }
 
-            // Manda a requisição oficial para o Firebase
             const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
 
-            // Vincula o nome/apelido digitado ao registro dele
+            // Vincula o nome digitado ao registro
             await updateProfile(userCredential.user, {
                 displayName: nome ? nome : "Estudante"
             });
 
-            // Redireciona para o painel de enviar bilhetes
-            window.location.href = '../home/home.html';
+            // REMOVIDO: window.location.href daqui. O onAuthStateChanged lá do topo assume agora!
 
         } catch (error) {
             if (msgBox) {
@@ -140,8 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 msgBox.className = "text-warning small mt-2 text-center fw-bold";
                 msgBox.innerText = "Entrando...";
             }
+            // Faz o login no Firebase
             await signInWithEmailAndPassword(auth, email, senha);
-            window.location.href = '../home/home.html';
+            
+            // REMOVIDO: A rota incorreta '../home/home.html' foi removida daqui.
+            // O onAuthStateChanged lá no topo vai detectar o login e redirecionar com segurança.
+
         } catch (error) {
             if (msgBox) {
                 msgBox.className = "text-danger small mt-2 text-center fw-bold";
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // GATILHOS DE CLIQUE DOS BOTÕES VERMELHOS
+    // GATILHOS DE CLIQUE DOS BOTÕES
     const btnLogin = document.getElementById('btn-fazer-login');
     if (btnLogin) {
         btnLogin.addEventListener('click', (e) => {
