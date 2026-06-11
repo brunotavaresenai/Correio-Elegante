@@ -1,7 +1,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 
-// CREDENCIAIS OFICIAIS
+// 1. Configuração do Firebase (Mantida a sua Oficial)
 const firebaseConfig = {
     apiKey: "AIzaSyAiOLS0LSGbxPs2cwnmL6PBRtaNjETtywI",
     authDomain: "correio-elegante-terceirao.firebaseapp.com",
@@ -13,157 +14,122 @@ const firebaseConfig = {
     measurementId: "G-EF8W91XPP9"
 };
 
-// Inicializa o Firebase e o serviço de Autenticação
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getDatabase(app);
 
-// 🚀 CENTRAL DE REDIRECIONAMENTO (Deixe o Firebase gerenciar a entrada)
+// 2. Proteção de Rota / Persistência
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        // Quando o usuário logar OU cadastrar com sucesso, ele é mandado para cá de forma limpa
         window.location.href = 'src/home/home.html';
     }
 });
 
-// Executa as configurações assim que os elementos HTML carregarem na tela
+// 3. Controle das Abas e Fluxos (Aguarda o DOM)
 document.addEventListener('DOMContentLoaded', () => {
-
-    // Elementos de Interface das Abas e Formulários
     const tabLogin = document.getElementById('tab-login');
     const tabCadastro = document.getElementById('tab-cadastro');
     const formLogin = document.getElementById('form-login');
     const formCadastro = document.getElementById('form-cadastro');
-    const msgBox = document.getElementById('auth-msg');
+    const msgErro = document.getElementById('auth-msg');
 
-    // 🔄 ALTERNÂNCIA DE TELAS (ENTRAR VS CADASTRAR)
-    if (tabLogin && tabCadastro) {
+    // Elementos de Login
+    const emailLogin = document.getElementById('login-email');
+    const senhaLogin = document.getElementById('login-senha');
+    const btnFazerLogin = document.getElementById('btn-fazer-login');
+
+    // Elementos de Cadastro
+    const nomeCad = document.getElementById('cad-nome');
+    const emailCad = document.getElementById('cad-email');
+    const senhaCad = document.getElementById('cad-senha');
+    const btnFazerCadastro = document.getElementById('btn-fazer-cadastro');
+
+    // 🔄 ALTERNÂNCIA DAS ABAS
+    if (tabLogin && tabCadastro && formLogin && formCadastro) {
         tabLogin.addEventListener('click', () => {
-            if (formLogin) formLogin.style.style.display = 'block';
-            if (formCadastro) formCadastro.style.display = 'none';
             tabLogin.classList.add('active');
             tabCadastro.classList.remove('active');
-            if (msgBox) msgBox.innerText = "";
+            formLogin.style.display = 'block';
+            formCadastro.style.display = 'none';
+            if (msgErro) msgErro.textContent = '';
         });
 
         tabCadastro.addEventListener('click', () => {
-            if (formLogin) formLogin.style.display = 'none';
-            if (formCadastro) formCadastro.style.display = 'block';
             tabCadastro.classList.add('active');
             tabLogin.classList.remove('active');
-            if (msgBox) msgBox.innerText = "";
+            formCadastro.style.display = 'block';
+            formLogin.style.display = 'none';
+            if (msgErro) msgErro.textContent = '';
         });
     }
 
-    // 🔐 FUNÇÃO PRINCIPAL: Criar Conta do Usuário
-    async function realizarCadastro() {
-        const nomeInput = document.getElementById('cad-nome');
-        const emailInput = document.getElementById('cad-email');
-        const senhaInput = document.getElementById('cad-senha');
+    // 🔑 LÓGICA DE LOGIN
+    if (btnFazerLogin) {
+        btnFazerLogin.addEventListener('click', async () => {
+            const email = emailLogin.value.trim();
+            const senha = senhaLogin.value.trim();
 
-        if (!emailInput || !senhaInput) {
-            if (msgBox) msgBox.innerText = "Erro: Componentes do formulário sumiram no HTML.";
-            return;
-        }
-
-        const nome = nomeInput ? nomeInput.value.trim() : "";
-        const email = emailInput.value.trim();
-        const senha = senhaInput.value;
-
-        if (!email || !senha) {
-            if (msgBox) {
-                msgBox.className = "text-danger small mt-2 text-center fw-bold";
-                msgBox.innerText = "Preencha o e-mail e a senha! 💕";
-            }
-            return;
-        }
-        if (senha.length < 6) {
-            if (msgBox) {
-                msgBox.className = "text-danger small mt-2 text-center fw-bold";
-                msgBox.innerText = "A senha precisa ter no mínimo 6 caracteres! 🔑";
-            }
-            return;
-        }
-
-        try {
-            if (msgBox) {
-                msgBox.className = "text-warning small mt-2 text-center fw-bold";
-                msgBox.innerText = "Criando sua conta...";
+            if (!email || !senha) {
+                msgErro.textContent = "Preencha todos os campos para entrar!";
+                return;
             }
 
-            const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+            try {
+                btnFazerLogin.textContent = "Entrando...";
+                btnFazerLogin.disabled = true;
+                await signInWithEmailAndPassword(auth, email, senha);
+            } catch (error) {
+                console.error(error);
+                msgErro.textContent = "E-mail ou senha incorretos!";
+                btnFazerLogin.textContent = "Entrar no App";
+                btnFazerLogin.disabled = false;
+            }
+        });
+    }
 
-            // Vincula o nome digitado ao registro
-            await updateProfile(userCredential.user, {
-                displayName: nome ? nome : "Estudante"
-            });
+    // 📝 LÓGICA DE CADASTRO
+    if (btnFazerCadastro) {
+        btnFazerCadastro.addEventListener('click', async () => {
+            const nome = nomeCad.value.trim();
+            const email = emailCad.value.trim();
+            const senha = senhaCad.value.trim();
 
-            // REMOVIDO: window.location.href daqui. O onAuthStateChanged lá do topo assume agora!
+            if (!email || !senha) {
+                msgErro.textContent = "E-mail e Senha são obrigatórios!";
+                return;
+            }
+            if (senha.length < 6) {
+                msgErro.textContent = "A senha deve ter pelo menos 6 caracteres!";
+                return;
+            }
 
-        } catch (error) {
-            if (msgBox) {
-                msgBox.className = "text-danger small mt-2 text-center fw-bold";
+            const nomeFinal = nome || "Estudante Anonimizado";
+
+            try {
+                btnFazerCadastro.textContent = "Criando Conta...";
+                btnFazerCadastro.disabled = true;
+
+                const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+                const user = userCredential.user;
+
+                await updateProfile(user, { displayName: nomeFinal });
+
+                await set(ref(db, `usuarios/${user.uid}`), {
+                    nome: nomeFinal,
+                    email: email,
+                    uid: user.uid
+                });
+
+            } catch (error) {
+                console.error(error);
                 if (error.code === 'auth/email-already-in-use') {
-                    msgBox.innerText = "Este e-mail já está em uso!";
-                } else if (error.code === 'auth/invalid-email') {
-                    msgBox.innerText = "E-mail com formato inválido.";
+                    msgErro.textContent = "Este e-mail já está cadastrado!";
                 } else {
-                    msgBox.innerText = `Erro: ${error.message}`;
+                    msgErro.textContent = "Erro ao criar conta. Tente novamente!";
                 }
+                btnFazerCadastro.textContent = "Criar Minha Conta";
+                btnFazerCadastro.disabled = false;
             }
-        }
-    }
-
-    // 🔓 FUNÇÃO AUXILIAR: Efetuar o Login existente
-    async function realizarLogin() {
-        const emailInput = document.getElementById('login-email');
-        const senhaInput = document.getElementById('login-senha');
-
-        if (!emailInput || !senhaInput) return;
-
-        const email = emailInput.value.trim();
-        const senha = senhaInput.value;
-
-        if (!email || !senha) {
-            if (msgBox) {
-                msgBox.className = "text-danger small mt-2 text-center fw-bold";
-                msgBox.innerText = "Por favor, preencha o e-mail e a senha.";
-            }
-            return;
-        }
-
-        try {
-            if (msgBox) {
-                msgBox.className = "text-warning small mt-2 text-center fw-bold";
-                msgBox.innerText = "Entrando...";
-            }
-            // Faz o login no Firebase
-            await signInWithEmailAndPassword(auth, email, senha);
-            
-            // REMOVIDO: A rota incorreta '../home/home.html' foi removida daqui.
-            // O onAuthStateChanged lá no topo vai detectar o login e redirecionar com segurança.
-
-        } catch (error) {
-            if (msgBox) {
-                msgBox.className = "text-danger small mt-2 text-center fw-bold";
-                msgBox.innerText = "E-mail ou senha inválidos. ❌";
-            }
-        }
-    }
-
-    // GATILHOS DE CLIQUE DOS BOTÕES
-    const btnLogin = document.getElementById('btn-fazer-login');
-    if (btnLogin) {
-        btnLogin.addEventListener('click', (e) => {
-            e.preventDefault();
-            realizarLogin();
-        });
-    }
-
-    const btnCadastrar = document.getElementById('btn-fazer-cadastro');
-    if (btnCadastrar) {
-        btnCadastrar.addEventListener('click', (e) => {
-            e.preventDefault();
-            realizarCadastro();
         });
     }
 });

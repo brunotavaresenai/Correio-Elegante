@@ -19,10 +19,11 @@ const db = getDatabase(app);
 
 let usuarioAtual = null;
 
-// Segurança: Garante que enxerga o login ativo do aluno
+// Segurança: Garante que enxerga o login active do aluno
 onAuthStateChanged(auth, (user) => {
     if (!user) {
-        window.location.href = '../auth/index.html';
+        // ✨ CORRIGIDO: Volta dois níveis para encontrar o index.html na raiz do projeto
+        window.location.href = '../../index.html';
     } else {
         usuarioAtual = user;
     }
@@ -98,16 +99,14 @@ if (btnEnviar) {
                 msgBox.innerText = "Pedido salvo com sucesso! Abrindo o Pix...";
             }
 
-            // ====== 📄 CONFIGURAÇÃO DA CHAVE PIX DIRETA (PREVENTIVO CONTRA TRAVAMENTOS) ======
+            // ====== 📄 CONFIGURAÇÃO DA CHAVE PIX DIRETA ======
             const inputPix = document.getElementById('pix-copia-cola');
             const modalPix = document.getElementById('love-pix-modal');
 
-            // Altera o valor da caixinha se o elemento existir no HTML
             if (inputPix) {
                 inputPix.value = "terceirologg@gmail.com";
             }
 
-            // Força a exibição do Modal na tela mudando o display para flex
             if (modalPix) {
                 modalPix.style.display = 'flex';
             } else {
@@ -141,44 +140,36 @@ if (btnCopiar) {
 // Fecha o modal, gera o link do WhatsApp com aviso de anonimato e joga para o histórico
 const btnFecharModal = document.getElementById('btn-fechar-modal-pix');
 if (btnFecharModal) {
-    btnFecharModal.addEventListener('click', async () => { // Adicionado 'async' para permitir a busca no banco
+    btnFecharModal.addEventListener('click', async () => {
         const destinatario = document.getElementById('carta-destinatario').value.trim();
         const seletorItem = document.getElementById('carta-tipo-item');
         const opcaoSelecionada = seletorItem.options[seletorItem.selectedIndex];
         const nomeItem = opcaoSelecionada.text.split('—')[0].trim();
         const valorPresente = opcaoSelecionada.getAttribute('data-preco');
-
-        // 🕵️‍♂️ Captura se a caixinha de anônimo está marcada ou não
         const anonimo = document.getElementById('carta-anonimo').checked;
 
-        // 🔐 Busca o usuário logado no momento
         const usuarioLogadoAgora = auth.currentUser;
         let textoRemetente = "Estudante";
 
         if (anonimo) {
             textoRemetente = "❌ ANÔNIMO (Não colocar nome na carta!)";
         } else if (usuarioLogadoAgora) {
-            // Se NÃO for anônimo, tentamos pegar o Nome do Aluno direto do nó 'usuarios' do Firebase
             try {
-                // Importação dinâmica do 'get' e 'child' para ler o banco pontualmente
                 const { get, child } = await import("https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js");
                 const dbRef = ref(db);
                 const snapshot = await get(child(dbRef, `usuarios/${usuarioLogadoAgora.uid}`));
 
                 if (snapshot.exists() && snapshot.val().nome) {
-                    textoRemetente = snapshot.val().nome; // Pega o Nome Real salvo no cadastro
+                    textoRemetente = snapshot.val().nome;
                 } else {
-                    // Caso não ache no banco, usa o displayName ou e-mail como plano B
                     textoRemetente = usuarioLogadoAgora.displayName || usuarioLogadoAgora.email.split('@')[0];
                 }
             } catch (err) {
-                // Se der qualquer erro na busca, usa o e-mail limpo para não travar o botão
                 textoRemetente = usuarioLogadoAgora.displayName || usuarioLogadoAgora.email.split('@')[0];
             }
         }
 
-        // 2. Cria o texto para o envio no WhatsApp atualizado com a informação do remetente real
-        const numeroWhats = "5571996764885"; // Número do Terceirão para onde o WhatsApp deve redirecionar
+        const numeroWhats = "5571996764885";
         const textoMensagem = `Olá! Acabei de enviar um Correio Elegante pelo App! \n\n` +
             ` *Para:* ${destinatario}\n` +
             ` *Remetente:* ${textoRemetente}\n` +
@@ -188,7 +179,6 @@ if (btnFecharModal) {
 
         const linkWhatsapp = `https://api.whatsapp.com/send?phone=${numeroWhats}&text=${encodeURIComponent(textoMensagem)}`;
 
-        // Abre o WhatsApp em nova aba e redireciona para o histórico
         window.open(linkWhatsapp, '_blank');
         window.location.href = '../historico/historico.html';
     });

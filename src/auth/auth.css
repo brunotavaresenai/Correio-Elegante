@@ -141,6 +141,11 @@ body {
     color: var(--texto);
 }
 
+.marketing-sub {
+    font-size: 13px;
+    color: var(--texto-muted);
+
+}
 .marketing-title span {
     color: var(--vermelho);
     font-style: italic;
@@ -148,7 +153,8 @@ body {
 
 .marketing-sub {
     font-size: 13px;
-    color: var(--texto-muted);
+    color: var(--texto);
+    font-weight: bold;
 }
 
 .price-pill {
